@@ -2,10 +2,12 @@
 #include <time.h>
 #include "classes.h"
 #include <cstdlib>
+#include <string>
+
 
 using namespace std;
 
-
+//These are all the function declerations
 void printStats(Player &);
 void userChoice(Player &);
 void printBoard(int, int);
@@ -18,36 +20,38 @@ void showInventory(Player &);
 void fightBob(Player &);
 void evalXP(Player &);
 
-//global variable :-P
+//global variable :-P Please remove enentually
 bool gameIsRunning = true;
 int numOfPotions = 2;
 bool foughtBob = false;
 
 int main()
 {
+	//Seed the random number generator with the system time
 	srand(time(NULL));
+	//create the player object
 	Player player1;
+	//variable to set the players name
 	string pName;
+	//Give the player 2 potions to start
 	Item potion1;
 	potion1.setHealing(10);
 	potion1.setName("Ultra Healing");
-	potion1.setType(1);
-	
+	potion1.setType(1);	
 	player1.inventory[0] = potion1;
 	player1.inventory[1] = potion1;
 
+	//set the players name
 	cout << "This is our game, Prepare to die!!\n";
 	cout << "What is you name? \n";
-
-	
-
 	cin >> pName;
-		player1.setName(pName);
+	player1.setName(pName);
 
-		cout << endl << endl << player1.getName() << " has entered the mystical land of Bob.\n"
-			<< "Bob is a benevolent ruler, but he has a dark secret.\n"
-			<< "Explore the land, gain xp to level up. Once you reach level 3 \n"
-			<< "The final boss will find you.\n";
+	//some lore
+	cout << endl << endl << player1.getName() << " has entered the mystical land of Bob.\n"
+		<< "Bob is a benevolent ruler, but he has a dark secret.\n"
+		<< "Explore the land, gain xp to level up. Once you reach level 3 \n"
+		<< "The final boss will find you.\n";
 
 
 	while (gameIsRunning)
@@ -105,21 +109,19 @@ void userChoice(Player &player1)
 	{
 	case 1:
 		printStats(player1);
-		break;
+			break;
 	case 2:
 		showInventory(player1);
-		break;
+			break;
 	case 3:
 		movePlayer(player1);
-		encounter(player1);
-		break;
+			break;
 	default:
 		cout << "Invalid Input.\n";
-
-		break;
+			break;
 	}
 }
-
+//print the stats of the player
 void printStats(Player &p)
 {
 	cout << "\n\n" << p.getName() <<  "'s Stats\n";
@@ -129,7 +131,7 @@ void printStats(Player &p)
 	cout << "XP " << p.getXp() << endl;
 	cout << "Level: " << p.getLevel() << endl;
 }
-
+//move the player on the map
 void movePlayer(Player &p)
 {
 	char choice;
@@ -141,20 +143,28 @@ void movePlayer(Player &p)
 	{
 	case 'n':
 		p.setPosY(  p.getPosY() - 1);
+		encounter(p);
 			break;
 	case 's':
 		p.setPosY( p.getPosY() + 1);
+		encounter(p);
 			break;
 	case 'e':
 		p.setPosX( p.getPosX() + 1);
+		encounter(p);
 			break;
 	case 'w' :
 		p.setPosX( p.getPosX() - 1);
+		encounter(p);
 			break;
+
+	//default to catch invalid input, this is currently broken and needs a loop
 	default:
 		cout << "Enter a direction you loser\n";
-		break;
+			break;
 		}
+
+	//Check if the player is on the map after moving
 	if (p.getPosX() == 10 || p.getPosX() == -1 || p.getPosY() == 10 || p.getPosY() == -1)
 	{
 		cout << "You fell off the map,  oh no! you are dead!\n";
@@ -164,10 +174,11 @@ void movePlayer(Player &p)
 	}
 
 }
+//decide what the player encounters
 void encounter(Player &p)
 {
 	int randNum;
-		randNum = rand() % 4;
+		randNum = (rand() % 3) +1;
 		if (randNum == 1)
 		{
 			npcEncounter(p);
@@ -180,58 +191,48 @@ void encounter(Player &p)
 		{
 			enemyEncounter(p);
 		}
-		else
-		{
-			cout << "Nothing Happened!! YAY!\n\a";
-		}
-}
+	}
 
 void enemyEncounter(Player &p)
 {
 	int choice;
 	bool end = false;
 	cout << p.getName() << " has encountered an enemy.\n";
+	//create an enemy object, This can be generated later
 	Enemy one;
 	cout << "It is a " << one.getName() << "\n";
-	cout << "What will "<< p.getName() << "  do?, 1) Attack 2) Run\n";
 
-	cin >> choice;
-	switch (choice)
-	{
-	case 1:
-		attackEnemy(p,one);
-		break;
-	case 2:
-		cout << p.getName() << " ran away!\n";
-		break;
-
-		}
-	}
+	//call the attack enemy function, needs the player and enemy to be passed
+	attackEnemy(p,one);
+}
 
 void npcEncounter(Player &p)
 {
-	int randNum = 0;
+	int randNum;
 	char choice;
 	cout << p.getName() << " encountered an NPC, his name is Bob\n";
 	randNum = (rand() % 2) + 1;
 
 	if (randNum == 1)
 	{
+		//npc gives some dialog
 		cout << "Bob does a silly dance.\n";
 	}
 	if (randNum == 2)
+		//npc gives you an item
 	{
+		//create an item and assign it stats
 		Item bobItem;
 		cout << "Bob gives " << p.getName() << " a healing potion.\n";
 		bobItem.setName("Healing Potion");
 		bobItem.setDamage(0);
 		bobItem.setHealing(5);
-		cout << "Do you want this item? y/n \n";
-		
-		cin >> choice;
-		if (choice == 'y'	)
-		{
 
+		//let the player decide to keep the item
+		cout << "Do you want this item? y/n \n";
+		cin >> choice;
+		if (choice == 'y')
+		{
 			p.inventory[numOfPotions] = bobItem;
 			cout << "The item has been added to slot 1\n";
 			numOfPotions++;
@@ -243,11 +244,13 @@ void npcEncounter(Player &p)
 
 	}
 }
-
+//the attack sequence for the enemy
 void attackEnemy(Player &p, Enemy &one)
 	{
+		//Store the player decision
 		int choice;
-		bool end = false;
+		//Variable to exit the loop
+		bool endCombat = false;
 
 		do
 		{
@@ -269,34 +272,37 @@ void attackEnemy(Player &p, Enemy &one)
 
 				{
 					cout << "Oh dear you are dead!" << endl;
-					end = true;
+					endCombat = true;
 				}
 				else if (one.getHP() <= 0)
 				{
 					cout << "You killed the " << one.getName() << endl;
 					p.setXp(p.getXp() + 1);
 					cout << "You earned 1 xp!\n";
-					end = true;
+					endCombat = true;
 				}
 			}
 			if (choice == 2)
 			{
-				end = true;
+				//Run away and exit the loop
+				//May want to move the player in a random direction after running, or not let them run sometimes
+				endCombat = true;
 			}
 			if (choice == 3)
 			{
+				//Show the inventory and let the player use an item
 				showInventory(p);
 			}
 		
 	
-	} while (end == false);
+	} while (endCombat == false);
 	if (foughtBob == false)
 	{
 		evalXP(p);
 	}
 
 }
-
+//Show the inventory, and ask if you want to use an item.
 void showInventory(Player &p)
 	{
 	char choice;
@@ -316,6 +322,7 @@ void showInventory(Player &p)
 
 			}
 		}
+		//This should probably be it's own function
 		cout << "Do you want to use an item? y/n \n";
 		cin >> choice;
 		if (choice == 'y')	
@@ -330,7 +337,7 @@ void showInventory(Player &p)
 			p.inventory[userin].healing = 0;
 		}
 	}
-
+//Check the player's xp amount after fighting a monster, and level up if 3 xp is earned
 void evalXP(Player &p)
 {
 	if (p.getXp() >= 3)
@@ -347,6 +354,8 @@ void evalXP(Player &p)
 		fightBob(p);
 	}
 }
+//This function determins if the player is ready to fight bob
+//the player gets to fight bob if his level is at least 3
 void fightBob(Player &p)
 {
 	Enemy bob;
