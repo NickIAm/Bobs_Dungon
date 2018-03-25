@@ -1,6 +1,4 @@
 #include <string>
-
-
 using namespace std;
 
 class Item
@@ -143,11 +141,14 @@ private:
 
 Player::Player()
 {
+	//initial stats for the player, when created
 	health = 15;
 	strength = 1;
 	xp = 0;
 	posX = 4;
 	posY = 4;
+
+	//fill the inventory with 50 "Empty" items
 	for (int i = 0; i < 50; i++)
 	{
 		Item nullItem;
@@ -165,36 +166,36 @@ Player::~Player()
 class Enemy
 {
 private:
+	//default enemy, a lone wolf
 	string name = "wolf";
 	int strength = 1;
 	int hp = 6;
 public:
+	string getName()
+	{
+		return  name;
+	}
+	int getStrength()
+	{
+		return strength;
+	}
+	int getHP()
+	{
+		return hp;
+	}
 
-string getName()
-{
-	return  name;
-}
-int getStrength()
-{
-	return strength;
-}
-int getHP()
-{
-	return hp;
-}
+	void setStrength(int st)
+	{
+		strength = st;
+	}
 
-void setStrength(int st)
-{
-	strength = st;
-}
-
-void setHP(int h)
-{
-	hp =h;
-}
-void setName(string namee)
-{
-	name = namee;
-}
+	void setHP(int h)
+	{
+		hp =h;
+	}
+	void setName(string namee)
+	{
+		name = namee;
+	}
 
 };

@@ -29,11 +29,14 @@ int main()
 {
 	//Seed the random number generator with the system time
 	srand(time(NULL));
+
 	//create the player object
 	Player player1;
+
 	//variable to set the players name
 	string pName;
-	//Give the player 2 potions to start
+
+	//create a potion and give 2 to start
 	Item potion1;
 	potion1.setHealing(10);
 	potion1.setName("Ultra Healing");
@@ -158,7 +161,7 @@ void movePlayer(Player &p)
 		encounter(p);
 			break;
 
-	//default to catch invalid input, this is currently broken and needs a loop
+	//default to catch invalid input
 	default:
 		cout << "Enter a direction you loser\n";
 			break;
@@ -172,7 +175,6 @@ void movePlayer(Player &p)
 		gameIsRunning = false;
 		exit(1);
 	}
-
 }
 //decide what the player encounters
 void encounter(Player &p)
@@ -249,11 +251,12 @@ void attackEnemy(Player &p, Enemy &one)
 	{
 		//Store the player decision
 		int choice;
+
 		//Variable to exit the loop
 		bool endCombat = false;
-
 		do
 		{
+
 		//This is for the player to choose to attack or run
 			cout << "Attack, Run, View Inventory: [1] [2] [3]";
 			cin >> choice;
@@ -292,36 +295,46 @@ void attackEnemy(Player &p, Enemy &one)
 			{
 				//Show the inventory and let the player use an item
 				showInventory(p);
-			}
-		
-	
+			}	
 	} while (endCombat == false);
+
 	if (foughtBob == false)
 	{
 		evalXP(p);
 	}
-
 }
 //Show the inventory, and ask if you want to use an item.
 void showInventory(Player &p)
 	{
+
+		//store the player choice
 	char choice;
+
+	//Count for number of inventory items
+	int itemCount = 0;
 		cout << "Your inventory contains" << endl;
 		for (int i = 0; i < 50; i++)
 		{
 			if (p.inventory[i].getName() == "Empty")
 			{
-
+				
 			}
 			else
 			{
+				itemCount++;
 				cout << "Item " << i  << endl << "Name : " << p.inventory[i].getName() << endl
 					<< "Strength Bonus : " << p.inventory[i].getDamage() << endl
 					<< "Healing Bonus : "  << p.inventory[i].getHealing() << endl
 					<< endl << endl;
-
 			}
 		}
+
+		//Check if the inventory is empty
+		if (itemCoun)
+		{
+				cout << "Inventory is empty";
+		}
+
 		//This should probably be it's own function
 		cout << "Do you want to use an item? y/n \n";
 		cin >> choice;
@@ -367,5 +380,4 @@ void fightBob(Player &p)
 	cout << "You win\n";
 	system("pause");
 	exit(1);
-
 }
