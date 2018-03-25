@@ -1,10 +1,8 @@
 #include <iostream>
 #include <time.h>
-#include "classes.h"
 #include <cstdlib>
 #include <string>
-
-
+#include "classes.h"
 using namespace std;
 
 //These are all the function declerations
@@ -19,12 +17,13 @@ void attackEnemy(Player &, Enemy &);
 void showInventory(Player &);
 void fightBob(Player &);
 void evalXP(Player &);
+void generateMonstor(Enemy &);
 
 //global variable :-P Please remove enentually
 bool gameIsRunning = true;
 int numOfPotions = 2;
 bool foughtBob = false;
-
+string monsterNames[10] = { "Wolf","Dragon","Spider","Skeleton","Butterfly","Squirtle","Charmander", "Bob's Uncle","SpiderMan","Thor" };
 int main()
 {
 	//Seed the random number generator with the system time
@@ -200,8 +199,11 @@ void enemyEncounter(Player &p)
 	int choice;
 	bool end = false;
 	cout << p.getName() << " has encountered an enemy.\n";
+
 	//create an enemy object, This can be generated later
 	Enemy one;
+	generateMonstor(one);
+
 	cout << "It is a " << one.getName() << "\n";
 
 	//call the attack enemy function, needs the player and enemy to be passed
@@ -330,25 +332,30 @@ void showInventory(Player &p)
 		}
 
 		//Check if the inventory is empty
-		if (itemCoun)
+		if (itemCount == 0)
 		{
-				cout << "Inventory is empty";
+				cout << "Inventory is empty\n";
+		}
+		else
+		{
+
+			cout << "Do you want to use an item? y/n \n";
+			cin >> choice;
+		if (choice == 'y')	
+			{
+				int userin;
+				cout << "What item do you want to use? Enter an item number \n";
+				cin >> userin;
+				Item inHand = p.inventory[userin];
+				p.setHealth(p.getHealth() + inHand.healing);
+				cout << p.getName() << " has been healed to " << p.getHealth() << endl;
+				p.inventory[userin].name = "Empty";
+				p.inventory[userin].healing = 0;
+			}
 		}
 
 		//This should probably be it's own function
-		cout << "Do you want to use an item? y/n \n";
-		cin >> choice;
-		if (choice == 'y')	
-		{
-			int userin;
-			cout << "What item do you want to use? Enter an item number \n";
-			cin >> userin;
-			Item inHand = p.inventory[userin];
-			p.setHealth(p.getHealth() + inHand.healing);
-			cout << p.getName() << " has been healed to " << p.getHealth() << endl;
-			p.inventory[userin].name = "Empty";
-			p.inventory[userin].healing = 0;
-		}
+	
 	}
 //Check the player's xp amount after fighting a monster, and level up if 3 xp is earned
 void evalXP(Player &p)
@@ -380,4 +387,19 @@ void fightBob(Player &p)
 	cout << "You win\n";
 	system("pause");
 	exit(1);
+}
+
+void generateMonstor(Enemy &newEnemy)
+{
+	int name;
+	int damage;
+	int health;
+
+	name = rand() % 10;
+	damage = rand() % 15;
+	health = rand() % 8;
+
+	newEnemy.setHP(health);
+	newEnemy.setStrength(damage);
+	newEnemy.setName(monsterNames[name]);
 }
