@@ -23,7 +23,7 @@ void generateMonstor(Enemy &);
 bool gameIsRunning = true;
 int numOfPotions = 2;
 bool foughtBob = false;
-string monsterNames[10] = { "Wolf","Dragon","Spider","Skeleton","Butterfly","Squirtle","Charmander", "Bob's Uncle","SpiderMan","Thor" };
+string monsterNames[10] = {"Wolf","Dragon","Spider","Skeleton","Butterfly","Squirtle","Charmander","Bob's Uncle","SpiderMan","Thor"};
 int main()
 {
 	//Seed the random number generator with the system time
@@ -205,6 +205,8 @@ void enemyEncounter(Player &p)
 	generateMonstor(one);
 
 	cout << "It is a " << one.getName() << "\n";
+	cout << "The " << one.getName() << " has the following stats\n" << "Health: " << one.getHP() << endl;
+	cout << "Strength: " << one.getStrength() << endl;
 
 	//call the attack enemy function, needs the player and enemy to be passed
 	attackEnemy(p,one);
@@ -238,7 +240,7 @@ void npcEncounter(Player &p)
 		if (choice == 'y')
 		{
 			p.inventory[numOfPotions] = bobItem;
-			cout << "The item has been added to slot 1\n";
+			cout << "The item has been added to slot " << numOfPotions << endl;
 			numOfPotions++;
 		}
 		else if (choice == 'n')
@@ -389,6 +391,7 @@ void fightBob(Player &p)
 	exit(1);
 }
 
+//basic function to generate a monster. 
 void generateMonstor(Enemy &newEnemy)
 {
 	int name;
