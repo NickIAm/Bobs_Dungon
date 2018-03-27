@@ -139,25 +139,29 @@ void movePlayer(Player &p)
 {
 	char choice;
 	cout << "Which direction to move??\n";
-	cout << "n e s w\n";
+	cout << "w a s d\n";
 	cin >> choice;
 
 	switch (choice)
 	{
-	case 'n':
+	case 'w':
 		p.setPosY(  p.getPosY() - 1);
+		printBoard(p.getPosX(), p.getPosY());
 		encounter(p);
 			break;
 	case 's':
 		p.setPosY( p.getPosY() + 1);
+		printBoard(p.getPosX(), p.getPosY());
 		encounter(p);
 			break;
-	case 'e':
+	case 'a':
 		p.setPosX( p.getPosX() + 1);
+		printBoard(p.getPosX(), p.getPosY());
 		encounter(p);
 			break;
-	case 'w' :
+	case 'd' :
 		p.setPosX( p.getPosX() - 1);
+		printBoard(p.getPosX(), p.getPosY());
 		encounter(p);
 			break;
 
@@ -330,7 +334,7 @@ void showInventory(Player &p)
 		}
 
 		//Check if the inventory is empty
-		if (itemCoun)
+		if (itemCount == 0)
 		{
 				cout << "Inventory is empty";
 		}
