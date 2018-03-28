@@ -140,35 +140,34 @@ void movePlayer(Player &p)
 	cout << "Which direction to move??\n";
 	cout << "w a s d\n";
 	cin >> choice;
-
-	switch (choice)
+	bool loop = false;
+	do
 	{
-	case 'w':
-		p.setPosY(  p.getPosY() - 1);
-		printBoard(p.getPosX(), p.getPosY());
-		encounter(p);
-			break;
-	case 's':
-		p.setPosY( p.getPosY() + 1);
-		printBoard(p.getPosX(), p.getPosY());
-		encounter(p);
-			break;
-	case 'a':
-		p.setPosX( p.getPosX() + 1);
-		printBoard(p.getPosX(), p.getPosY());
-		encounter(p);
-			break;
-	case 'd' :
-		p.setPosX( p.getPosX() - 1);
-		printBoard(p.getPosX(), p.getPosY());
-		encounter(p);
-			break;
+		switch (choice)
+		{
+		case 'w':
+			p.setPosY(  p.getPosY() - 1);
+			printBoard(p.getPosX(), p.getPosY());
+				break;
+		case 's':
+			p.setPosY( p.getPosY() + 1);
+			printBoard(p.getPosX(), p.getPosY());
+				break;
+		case 'a':
+			p.setPosX( p.getPosX() + 1);
+			printBoard(p.getPosX(), p.getPosY());
+				break;
+		case 'd' :
+			p.setPosX( p.getPosX() - 1);
+			printBoard(p.getPosX(), p.getPosY());
+				break;
 
-	//default to catch invalid input
-	default:
-		cout << "Enter a direction you loser\n";
-			break;
-		}
+		//default to catch invalid input
+		default:
+			cout << "Enter a direction you loser\n";
+				break;
+			}
+	} while (loop);
 
 	//Check if the player is on the map after moving
 	if (p.getPosX() == 10 || p.getPosX() == -1 || p.getPosY() == 10 || p.getPosY() == -1)
@@ -176,8 +175,12 @@ void movePlayer(Player &p)
 		cout << "You fell off the map,  oh no! you are dead!\n";
 		system("pause");
 		gameIsRunning = false;
-		exit(1);
 	}
+	if (gameIsRunning)
+	{
+		encounter(p);
+	}
+	
 }
 //decide what the player encounters
 void encounter(Player &p)
@@ -255,7 +258,7 @@ void npcEncounter(Player &p)
 	}
 }
 //the attack sequence for the enemy
-void attackEnemy(Player &p, Enemy &one)
+void attackEnemy(Player &p, Enemy &bad)
 	{
 		//Store the player decision
 		int choice;
@@ -271,27 +274,30 @@ void attackEnemy(Player &p, Enemy &one)
 			if (choice == 1)
 			{
 				//set the enemy and player health according to the attack
-				one.setHP(one.getHP() - p.getStrength());
+				bad.setHP(bad.getHP() - p.getStrength());
 				cout << "You hit for " << p.getStrength() << " damage.\n";
-				cout << one.getName() << " has  " << one.getHP() << " HP left\n";
-				p.setHealth(p.getHealth() - one.getStrength());
-				cout << "The " << one.getName() << " hit you for " << one.getStrength() << endl;
-				cout << "You have " << p.getHealth() << " health left! Oh NO!!:\n";
-
-				//check if the player or enemy is dead and exit loop
-				if (p.getHealth() <= 0)
-
+				cout << bad.getName() << " has  " << bad.getHP() << " HP left\n";
+				//check if the monster is dead
+				if (bad.getHP() <= 0)
 				{
-					cout << "Oh dear you are dead!" << endl;
-					endCombat = true;
-				}
-				else if (one.getHP() <= 0)
-				{
-					cout << "You killed the " << one.getName() << endl;
+					cout << "You killed the " << bad.getName() << endl;
 					p.setXp(p.getXp() + 1);
 					cout << "You earned 1 xp!\n";
 					endCombat = true;
 				}
+
+				p.setHealth(p.getHealth() - bad.getStrength());
+				cout << "The " << bad.getName() << " hit you for " << bad.getStrength() << endl;
+				cout << "You have " << p.getHealth() << " health left! Oh NO!!:\n";
+
+				//check if the player is dead and exit loop
+				if (p.getHealth() <= 0)
+				{
+					cout << "Oh dear you are dead!" << endl;
+					endCombat = true;
+					gameIsRunning = false;
+				}
+				
 			}
 			if (choice == 2)
 			{
@@ -392,7 +398,7 @@ void fightBob(Player &p)
 	attackEnemy(p, bob);
 	cout << "You win\n";
 	system("pause");
-	exit(1);
+	gameIsRunning = false;
 }
 
 //basic function to generate a monster. 
@@ -402,9 +408,9 @@ void generateMonstor(Enemy &newEnemy)
 	int damage;
 	int health;
 
-	name = rand() % 10;
-	damage = rand() % 15;
-	health = rand() % 8;
+	name = (rand() % 10) + 1;
+	damage = (rand() % 15) + 1;
+	health = (rand() % 8) + 1;
 
 	newEnemy.setHP(health);
 	newEnemy.setStrength(damage);
